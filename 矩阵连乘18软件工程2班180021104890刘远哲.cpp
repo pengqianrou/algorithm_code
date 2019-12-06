@@ -25,12 +25,12 @@ void Traceback(int i, int j){
 	if(i == j) return;
 	Traceback(i, s[i][j]);
 	Traceback(s[i][j]+1, j);
-	cout<<"矩阵 A"<<i<<","<<s[i][j];
-	cout<<" 与 B"<<(s[i][j]+1)<<","<<j<<"连乘"<<endl;
+	cout<<"矩阵 A("<<i<<","<<s[i][j] << ")";
+	cout<<" 与 B(" <<(s[i][j]+1)<<","<<j<<")连乘"<<endl;
 }
 
 int main(){
-	int a[8]={3,5,8,4,2};
+	int a[8]={12,31,42,43,4,5,23};
 	cout<<"计算矩阵大小为：";
 	for(int i = 0; i <= 4; i++) cout<<a[i]<<" ";
 	MartrixChain(a,4);
