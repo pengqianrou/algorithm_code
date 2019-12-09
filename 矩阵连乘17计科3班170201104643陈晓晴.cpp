@@ -1,31 +1,48 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
-void matrixMultiply(int (*a)[3],int (*b)[2],int (*c)[2],int ra,int ca,int rb,int cb)
-{
-	if(ca!=rb)
-		cout<<"矩阵不可乘";
-	for(int i=0;i<ra;i++)
-		{
-			for(int j=0;j<cb;j++)
-				{
-					int sum=a[i][0]*b[0][j];
-					for(int k=1;k<ca;k++)
-						sum+=a[i][k]*b[k][j];
-					c[i][j]=sum;
-				}
-		}
- } 
+
+const int maxn =105;
+int p[maxn];/*矩阵的维数*/
+int m[maxn][maxn];/*最优值，最少乘法次数*/
+int s[maxn][maxn];/*断开的位置*/
+int n;/*p的长度*/
  
-int main(){
-	int a[2][3] = {{1,2,3},{4,5,6}};
-	int b[3][2]={{1,3},{5,7},{2,4}};
-	int c[2][2];
-	matrixMultiply(a,b,c,2,3,3,2);
-	for(int i=0;i<2;i++)
-		{
-			for(int j=0;j<2;j++)
-				cout<<c[i][j]<<"\t";
-			cout<<endl;
-		}
-	return 0;
+void matrixChain(){ /*计算最优值*/
+    for(int i=1;i<=n;i++)
+        m[i][i]=0;
+    for(int r=2;r<=n;r++){
+        for(int i=1;i<=n-r+1;i++){
+            int j=r+i-1;
+            m[i][j]=m[i+1][j]+p[i-1]*p[i]*p[j];
+            s[i][j]=i;
+            for(int k=i+1;k<j;k++){
+                int t=m[i][k]+m[k+1][j]+p[i-1]*p[k]*p[j];
+                if(t<m[i][j]){
+                    m[i][j]=t;
+                    s[i][j]=k;
+                }
+            }
+        }
+    }
 }
+ 
+void trackBack(int i,int j)
+{/*求最优计算次序,从1~n-1*/
+    if(i==j) return;
+    trackBack(i,s[i][j]);
+    trackBack(s[i][j]+1,j);
+    cout<<"Multiply A"<<i<<","<<s[i][j];
+    cout<<" and A"<<(s[i][j]+1)<<","<<j<<endl;
+}
+ 
+int main()
+{
+    cin>>n;
+        for(int i=0;i<=n;i++)
+            cin>>p[i];
+        matrixChain();
+        trackBack(1,n);/*矩阵连乘最优计算次序*/
+        cout<<m[1][n];
+    return 0;
+}
+
